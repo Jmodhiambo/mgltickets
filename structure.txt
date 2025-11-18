@@ -1,0 +1,52 @@
+mgltickets/
+├── backend/
+│   ├── app/
+│   │   ├── main.py                 # FastAPI entry point
+│   │   ├── core/                   # Config, security, settings
+│   │   │   ├── config.py
+│   │   │   └── security.py
+│   │   ├── api/
+│   │   │   ├── routes/
+│   │   │   │   ├── events.py
+│   │   │   │   ├── bookings.py
+│   │   │   │   ├── payments.py
+│   │   │   │   └── auth.py
+│   │   │   └── dependencies.py
+│   │   ├── db/
+│   │   │   ├── models/
+│   │   │   │   ├── event.py
+│   │   │   │   ├── user.py
+│   │   │   │   └── booking.py
+│   │   │   ├── session.py
+│   │   │   └── repositories/
+│   │   ├── services/
+│   │   │   ├── payments_service.py
+│   │   │   ├── email_service.py
+│   │   │   └── booking_service.py
+│   │   ├── schemas/                # Pydantic models
+│   │   ├── tests/
+│   │   └── utils/
+│   ├── requirements.txt
+│   └── Dockerfile
+│
+├── frontend/
+│   ├── next.config.js
+│   ├── package.json
+│   ├── public/
+│   └── src/
+│       ├── pages/
+│       │   ├── index.tsx
+│       │   ├── events/
+│       │   │   ├── [id].tsx
+│       │   │   └── create.tsx
+│       │   ├── bookings/
+│       │   │   └── [id].tsx
+│       ├── components/
+│       ├── services/       # API client layer
+│       │   └── api.ts
+│       ├── context/        # Auth, global state
+│       └── styles/
+│
+├── docker-compose.yml
+├── .env
+└── README.md

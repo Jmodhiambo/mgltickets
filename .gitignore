@@ -1,0 +1,23 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Exclude the venv from commit
+.venv
+
+# Ignore everything in the uploads and logs folders
+backend/app/uploads/*
+backend/app/logs/*
+
+# But keep this one file to ensure the folders exists in git
+!backend/app/uploads/.gitkeep
+!backend/app/logs/.gitkeep
+
+
+# Unit test / coverage reports
+.coverage
+.pytest_cache/
+
+# Environment variables file
+.env
