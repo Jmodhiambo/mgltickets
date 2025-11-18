@@ -105,7 +105,7 @@ mgltickets/
 - Email notifications for bookings
 - Analytics dashboard for organizers
 
---
+---
 
 ## License
 
