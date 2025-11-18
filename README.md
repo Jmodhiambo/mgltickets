@@ -1,10 +1,10 @@
-# 🎟️ MGLTickets
+# MGLTickets
 
 **MGLTickets** is a simple and intuitive **event ticket booking app**. It helps users discover events, view details, and book tickets online, while allowing organizers to manage their events efficiently.
 
 ---
 
-## ✨ Features (MVP)
+## Features (MVP)
 
 - 🗓️ Browse upcoming events  
 - 📄 View event details and ticket types  
@@ -14,7 +14,7 @@
 
 ---
 
-## 💻 Tech Stack
+## Tech Stack
 
 - **Backend:** Python, FastAPI, SQLAlchemy, PostgreSQL  
 - **Frontend:** React, Vite, Tailwind CSS  
@@ -23,14 +23,17 @@
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Python 3.10+  
 - Node.js 18+  
 - PostgreSQL 12+
 
-### Backend Setup
+---
+
+## Backend Setup
+
 ```bash
 # Clone the repo
 git clone https://github.com/jmodhiambo/mgltickets.git
@@ -47,14 +50,20 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-### Frontend Setup
+---
+
+## Frontend Setup
+
 ```bash
 cd ..frontend
 npm install
 npm run dev
 ```
 
-### Project Structure
+---
+
+## Project Structure
+
 ```bash
 mgltickets/
 ├── backend/
@@ -86,12 +95,18 @@ mgltickets/
 └── ...
 ```
 
-### Future Plans
+---
+
+## Future Plans
+
 - Payment integration (M-Pesa, Stripe)
 - Multi-event support per organizer
 - Event flyer uploads & management
 - Email notifications for bookings
 - Analytics dashboard for organizers
 
-### License
+--
+
+## License
+
 This project is licensed under the MIT License.
