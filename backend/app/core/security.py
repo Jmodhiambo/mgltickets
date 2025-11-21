@@ -1,50 +1,61 @@
-from typing import Optional, Dict, Any
-from fastapi import Depends, HTTPException, Request
+#!/usr/bin/env python3
+"""Security for MGLTickets."""
+
+from datetime import datetime, timedelta
+
+from fastapi import Request, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from core.config import SECRET_KEY, ALGORITHM
 from jose import jwt, JWTError
-from dataclasses import dataclass
 
+from app.services.user_services import get_user_by_id_service
+from app.core.config import SECRET_KEY, ALGORITHM
 
-@dataclass
-class AuthUser:
-    id: str
-    role: str
+# FastAPI security scheme
+bearer_scheme = HTTPBearer()
 
+def create_access_token(user_id: int, expires_minutes: int = 60) -> str:
+    """Create a signed JWT."""
+    if not "user_id":
+        raise ValueError("Token payload must contain user_id")
+    
+    payload = {
+        "id": user_id,
+        "exp": datetime.utcnow() + timedelta(minutes=expires_minutes)
+    }
 
-bearer_scheme = HTTPBearer(auto_error=False)
+    return jwt.encode(payload, str(SECRET_KEY), algorithm=ALGORITHM)
 
-
-def decode_jwt(token: str) -> Dict[str, Any]:
-    try:
-        payload = jwt.decode(token, SECRET_KEY.get_secret_value(), algorithms=[ALGORITHM])
-        return payload
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
-
-
-async def get_current_user(
+def get_current_user(
     request: Request,
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(bearer_scheme)
-) -> Optional[AuthUser]:
+    credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme)
+) -> dict:
+    """
+    Extract token from Authorization header, decode it, load user,
+    and attach user to request.state.
+    """
+    # Extract token from Authorization header which is credetials in this case
+    token = credentials.credentials
 
-    # No token provided → treat as anonymous
-    if credentials is None:
+    if not token:
         request.state.user = None
         return None
 
-    token = credentials.credentials
-    payload = decode_jwt(token)
-
-    user_id = payload.get("user_id")
-    role = payload.get("role")
-
+    try:
+        payload = jwt.decode(token, str(SECRET_KEY), algorithms=[ALGORITHM])
+       
+    except JWTError:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
+    
+    user_id = payload.get("id")
     if not user_id:
-        raise HTTPException(status_code=401, detail="Missing user_id in token")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
+    
+    user = get_user_by_id_service(user_id)
 
-    user = AuthUser(id=str(user_id), role=str(role or "user"))
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
 
-    # Attach user to request state → picked up by logging middleware
+    # Attach user to request state - picked up by logging middleware
     request.state.user = user
 
     return user

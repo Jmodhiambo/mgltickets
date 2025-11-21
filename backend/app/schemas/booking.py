@@ -4,8 +4,8 @@
 from datetime import datetime
 
 from app.schemas.base import BaseModelEAT
-from app.schemas.ticket_type import TicketTypeOut
-from app.schemas.user import UserOut
+# from app.schemas.ticket_type import TicketTypeOut
+# from app.schemas.user import UserOut
 
 class BookingOut(BaseModelEAT):
     """Schema for outputting Booking data."""
@@ -17,8 +17,8 @@ class BookingOut(BaseModelEAT):
     total_price: int
     created_at: datetime
     updated_at: datetime
-    user: UserOut
-    ticket_type: list[TicketTypeOut]
+    # user: UserOut
+    # ticket_type: list[TicketTypeOut]
 
     class Config:
         from_attributes = True

@@ -4,9 +4,9 @@
 from datetime import datetime
 from typing import Optional
 from app.schemas.base import BaseModelEAT
-from app.schemas.booking import BookingOut
-from app.schemas.ticket_type import TicketTypeOut
-from app.schemas.user import UserOut
+# from app.schemas.booking import BookingOut
+# from app.schemas.ticket_type import TicketTypeOut
+# from app.schemas.user import UserOut
 
 class TicketInstanceOut(BaseModelEAT):
     """Schema for outputting TicketInstance data."""
@@ -20,9 +20,9 @@ class TicketInstanceOut(BaseModelEAT):
     created_at: datetime
     updated_at: datetime
     used_at: Optional[datetime] = None
-    booking: BookingOut
-    ticket_type: TicketTypeOut
-    user: UserOut
+    # booking: BookingOut
+    # ticket_type: TicketTypeOut
+    # user: UserOut
 
     class Config:
         from_attributes = True

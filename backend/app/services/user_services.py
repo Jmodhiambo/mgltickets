@@ -38,7 +38,7 @@ def authenticate_user_service(user_id: int, email: str, password: str) -> dict:
     if '@' not in email or '.' not in email:
         raise ValueError("Invalid email format.")
     
-    user = user_repo.get_user_with_password_repo(user_id)
+    user = user_repo.get_user_with_password_by_id_repo(user_id)
     if not user:
         raise ValueError("User not found.")
     

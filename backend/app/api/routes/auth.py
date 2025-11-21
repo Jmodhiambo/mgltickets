@@ -1,88 +1,71 @@
-from datetime import datetime, timedelta
-from typing import Optional, Dict, Any
-from fastapi import APIRouter, HTTPException, Depends
+#!/usr/bin/env python3
+"""Auth routes for MGLTickets."""
+
+from fastapi import APIRouter, HTTPException, status, Depends, Request
 from fastapi.security import OAuth2PasswordRequestForm
-from jose import jwt
 
-from app.core.security import AuthUser, get_current_user
-from app.core.config import SECRET_KEY, ALGORITHM
+from app.services.user_services import (
+    get_user_by_email_service,
+    authenticate_user_service
+)
+from app.core.security import (
+    create_access_token,
+    get_current_user,
+)
 
-router = APIRouter(prefix="/auth", tags=["Authentication"])
+router = APIRouter()
 
-
-# ---------------------------------------------------------------------------
-# Helper functions
-# ---------------------------------------------------------------------------
-
-def create_access_token(data: Dict[str, Any], expires_minutes: int = 60) -> str:
-    """Create a signed JWT."""
-    payload = data.copy()
-    expire = datetime.utcnow() + timedelta(minutes=expires_minutes)
-    payload.update({"exp": expire})
-    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
-
-
-# ---------------------------------------------------------------------------
-# Routes
-# ---------------------------------------------------------------------------
 
 @router.post("/login")
 async def login(form: OAuth2PasswordRequestForm = Depends()):
     """
-    Authenticate user and return JWT.
-    Replace this dummy authentication with database lookup.
+    Authenticate user and return an access token.
     """
+    # OAuth2PasswordRequestForm has username and password, so email in this case is username.
+    email = form.username
+    user = get_user_by_email_service(email)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
+        )
 
-    # Dummy users for testing – replace with DB
-    fake_users = {
-        "admin@example.com": {"id": "1", "password": "adminpass", "role": "admin"},
-        "user@example.com": {"id": "2", "password": "userpass", "role": "user"},
-    }
+    if not authenticate_user_service(user.id, email, form.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password",
+    )
 
-    user_data = fake_users.get(form.username)
-    if not user_data or user_data["password"] != form.password:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-
-    token_data = {
-        "user_id": user_data["id"],
-        "role": user_data["role"],
-    }
-
-    access_token = create_access_token(token_data)
+    token = create_access_token(user.id)
 
     return {
-        "access_token": access_token,
+        "message": "Login successful",
+        "access_token": token,
         "token_type": "bearer",
         "expires_in": 3600,
-        "user": {
-            "id": user_data["id"],
-            "role": user_data["role"],
-        },
     }
 
-
 @router.post("/refresh")
-async def refresh_token(user: AuthUser = Depends(get_current_user)):
+async def refresh_token(user=Depends(get_current_user)):
     """
     Generate a fresh JWT for an authenticated user.
     """
-
     if not user:
         raise HTTPException(status_code=401, detail="Authentication required")
-
-    token_data = {
-        "user_id": user.id,
-        "role": user.role,
-    }
-
-    new_token = create_access_token(token_data)
-
+    
     return {
-        "access_token": new_token,
+        "access_token": create_access_token(user.id),
         "token_type": "bearer",
         "expires_in": 3600,
-        "user": {
-            "id": user.id,
-            "role": user.role,
-        },
+    }
+
+
+@router.post("/logout")
+async def logout(user=Depends(get_current_user)):
+    """
+    'Logout' by instructing client to delete the token.
+    JWT invalidation is client-side unless you use a blacklist.
+    """
+    return {
+        "message": "Logout successful. Client should delete the token."
     }

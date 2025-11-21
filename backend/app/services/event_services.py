@@ -9,8 +9,17 @@ from app.core.logging_config import logger
 async def create_event_service(event_data: EventCreate) -> dict:
     """Create a new event."""
     logger.info(f"Creating event: {event_data}")
+    flyer_url = "jhjhjhjhjnet"
+    event_data = event_data.copy(update={"flyer_url": flyer_url})
     event = event_repo.create_event_repo(event_data)
     logger.info(f"Created event with ID: {event.id}")
+    return event
+
+async def update_event_service(event_id: int, event_data: EventCreate) -> dict:
+    """Update an event by its ID."""
+    logger.info(f"Updating event with ID: {event_id}")
+    event = event_repo.update_event_repo(event_id, event_data)
+    logger.info(f"Updated event with ID: {event.id}")
     return event
 
 async def get_approved_events_service() -> list[dict]:

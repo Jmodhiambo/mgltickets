@@ -4,9 +4,8 @@
 from datetime import datetime
 from pydantic import EmailStr
 from typing import Optional
-
 from app.schemas.base import BaseModelEAT
-from app.schemas.event import EventOut
+# from app.schemas.event import EventOut
 
 class UserOut(BaseModelEAT):
     """Schema for outputting User data."""
@@ -19,7 +18,7 @@ class UserOut(BaseModelEAT):
     is_active: bool
     created_at: datetime
     updated_at: datetime
-    events: Optional[list[EventOut]] = []
+    # events: Optional[list["EventOut"]] = []
 
     class Config:
         from_attributes = True

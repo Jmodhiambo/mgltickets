@@ -5,10 +5,9 @@ from datetime import datetime
 from typing import Optional
 
 from app.schemas.base import BaseModelEAT
-from app.schemas.event import EventOut
-from app.schemas.user import UserOut
-from app.schemas.booking import BookingOut
-from app.schemas.ticket_instance import TicketInstanceOut
+# from app.schemas.event import EventOut
+# from app.schemas.booking import BookingOut
+# from app.schemas.ticket_instance import TicketInstanceOut
 
 class TicketTypeOut(BaseModelEAT):
     """Schema for outputting TicketType data."""
@@ -21,9 +20,9 @@ class TicketTypeOut(BaseModelEAT):
     quantity_sold: int
     created_at: datetime
     updated_at: datetime
-    event: EventOut
-    bookings: list[BookingOut] = []
-    ticket_instances: list[TicketInstanceOut] = []
+    # event: EventOut
+    # bookings: list[BookingOut] = []
+    # ticket_instances: list[TicketInstanceOut] = []
 
     class Config:
         from_attributes = True

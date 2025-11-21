@@ -1,15 +1,22 @@
+#!/usr/bin/env python3
+"""Logging middleware for MGLTickets."""
+
 from typing import Awaitable, Callable
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
 
-from core.logging_config import logger, user_id_var, role_var
+from app.core.logging_config import logger, user_id_var, role_var
 
 
 class LoggingMiddleware(BaseHTTPMiddleware):
-    """Middleware that attaches contextual user data to each log entry."""
+    """
+    Middleware that attaches contextual user data to each log entry.
+    BaseHTTPMiddleware allows us to run code before and after each request.
+    """
 
     def __init__(self, app: ASGIApp):
+        """Initializes the middleware with the FastAPI app instance"""
         super().__init__(app)
 
     async def dispatch(
@@ -17,7 +24,10 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         request: Request,
         call_next: Callable[[Request], Awaitable[Response]],
     ) -> Response:
-
+        """
+        Runs for every HTTP request, and logs the request and response.
+        """
+        # Extract user from request
         user = getattr(request.state, "user", None)
 
         if user:

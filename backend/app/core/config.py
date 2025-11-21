@@ -17,7 +17,7 @@ DB_NAME: str = config("DB_NAME")
 # Construct the SQLAlchemy Database URI
 # get_secret_value() is used to retrieve the actual password string from the Secret object
 DATABASE_URL: str = (
-    f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD.get_secret_value()}@"
+    f"postgresql+psycopg2://{DB_USER}:{str(DB_PASSWORD)}@"
     f"{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 
@@ -25,5 +25,5 @@ DATABASE_URL: str = (
 SQLALCHEMY_ECHO: bool = config("SQLALCHEMY_ECHO", cast=bool, default=False)
 
 # Other secrets
-SECRET_KEY: Secret = config("SECRET_KEY", cast=Secret)
+SECRET_KEY: str = config("SECRET_KEY", cast=Secret)
 ALGORITHM: str = config("ALGORITHM", default="HS256")

@@ -34,7 +34,7 @@ def get_user_by_id_repo(user_id: int) -> Optional[UserOut]:
         user = session.query(User).filter(User.id == user_id).first()
         return UserOut.model_validate(user) if user else None
     
-def get_user_with_password_repo(user_id: int) -> Optional[UserOutWithPWD]:
+def get_user_with_password_by_id_repo(user_id: int) -> Optional[UserOutWithPWD]:
     """Retrieve a user by their ID including password hash."""
     with get_session() as session:
         user = session.query(User).filter(User.id == user_id).first()

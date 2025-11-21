@@ -4,10 +4,10 @@
 from app.db.models.event import Event
 from app.db.session import get_session
 from typing import Optional
-from app.schemas.event import EventOut, EventCreate
+from app.schemas.event import EventOut, EventCreatWithFlyer, EventCreate, EventUpdate
 from datetime import datetime
 
-def create_event_repo(event_data: EventCreate) -> EventOut:
+def create_event_repo(event_data: EventCreatWithFlyer) -> EventOut:
     """Create a new event in the database."""
     with get_session() as session:
         new_event = Event(
@@ -24,7 +24,20 @@ def create_event_repo(event_data: EventCreate) -> EventOut:
         session.refresh(new_event)  # Refresh to get updated fields
         return EventOut.model_validate(new_event)
     
-
+def update_event_repo(event_id: int, event_data: EventUpdate) -> EventOut:
+    """Update an event in the database."""
+    with get_session() as session:
+        event = session.query(Event).filter(Event.id == event_id).first()
+        if event:
+            event.title = event_data.title
+            event.description = event_data.description
+            event.venue = event_data.venue
+            event.start_time = event_data.start_time
+            event.end_time = event_data.end_time
+            session.commit()
+            session.refresh(event)  # Refresh to get updated fields
+            return EventOut.model_validate(event)
+        return None
 def get_approved_events_repo() -> list[EventOut]:
     """Get all approved events from the database."""
     with get_session() as session:

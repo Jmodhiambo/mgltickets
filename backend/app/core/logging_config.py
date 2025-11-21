@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+"""Logging configuration for MGLTickets."""
+
 import logging
 import json
 from logging.handlers import RotatingFileHandler
@@ -15,7 +18,7 @@ class ContextFilter(logging.Filter):
 
     def filter(self, record: logging.LogRecord) -> bool:
         record.user_id = user_id_var.get()
-        record.user_role = role_var.get()
+        record.role = role_var.get()
         return True
 
 
@@ -29,7 +32,7 @@ class JSONFormatter(logging.Formatter):
             "logger": record.name,
             "module": record.module,
             "user_id": getattr(record, "user_id", "unknown"),
-            "user_role": getattr(record, "user_role", "unknown"),
+            "role": getattr(record, "role", "unknown"),
             "message": record.getMessage(),
         }
 
@@ -43,7 +46,7 @@ class JSONFormatter(logging.Formatter):
 def configure_logging() -> None:
     """Configure the application logging system with JSON logs."""
 
-    logs_dir = Path("app/logs")
+    logs_dir = Path("app/logs/")
     logs_dir.mkdir(exist_ok=True)
 
     log_file = logs_dir / "app.jsonl"  # JSON lines file
